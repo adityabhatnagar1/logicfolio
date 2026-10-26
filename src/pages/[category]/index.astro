@@ -1,0 +1,47 @@
+---
+import ArchiveLayout from '../../layouts/ArchiveLayout.astro';
+import { url } from '../../lib/paths';
+import { getCategories, getCategory, componentHref, pad } from '../../lib/archive';
+
+export function getStaticPaths() {
+  return getCategories().map((c) => ({ params: { category: c.slug } }));
+}
+
+const category = getCategory(Astro.params.category ?? '');
+if (!category) throw new Error(`Unknown category: ${Astro.params.category}`);
+const count = category.components.length;
+---
+
+<ArchiveLayout title={category.name} description={`${category.name}: ${count} components`} category={category.slug}>
+  <div class="wrap">
+    <header class="page-head">
+      <nav class="meta" aria-label="Breadcrumb"><a href={url('/')}>Logicfolio</a> / {category.name}</nav>
+      <h1>{category.name}</h1>
+      <p class="meta">{count} {count === 1 ? 'component' : 'components'}</p>
+    </header>
+
+    <div class="filter" data-filter hidden>
+      <label class="meta" for="filter-input">Filter {category.name.toLowerCase()}</label>
+      <input id="filter-input" type="search" autocomplete="off" data-filter-input />
+      <p class="meta" role="status" aria-live="polite" data-filter-status></p>
+    </div>
+
+    <ol class="index" role="list">
+      {
+        category.components.map((c, i) => (
+          <li data-filter-item data-filter-text={`${c.name} ${c.summary}`.toLowerCase()}>
+            <span class="index-num meta" aria-hidden="true">{pad(i + 1)}</span>
+            <div>
+              <a class="index-link" href={componentHref(c)}>{c.name}</a>
+              {c.summary && <p class="index-summary">{c.summary}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="meta" data-filter-empty hidden>No components match that filter.</p>
+  </div>
+  <script>
+    import '../../scripts/filter';
+  </script>
+</ArchiveLayout>

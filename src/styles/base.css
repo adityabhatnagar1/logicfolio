@@ -1,0 +1,612 @@
+/* base.css: reset, typography, layout shell. No decoration. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--bg);
+  overflow-wrap: break-word;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- layout shell ---------- */
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--page));
+  margin-inline: auto;
+}
+main {
+  flex: 1;
+  padding-block: var(--s5) var(--s6);
+}
+main:focus {
+  outline: none;
+}
+section {
+  margin-top: var(--s6);
+}
+section:first-child {
+  margin-top: 0;
+}
+
+/* ---------- type ---------- */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  line-height: var(--lh-head);
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--fs-h1);
+}
+h2 {
+  font-size: var(--fs-h2);
+  margin-block: var(--s5) var(--s3);
+}
+h3 {
+  font-size: var(--fs-h3);
+  margin-block: var(--s4) var(--s2);
+}
+h4 {
+  font-size: var(--fs-body);
+  margin-block: var(--s3) var(--s1);
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote,
+pre,
+figure,
+table {
+  margin-top: var(--s3);
+}
+:is(h2, h3, h4) + :is(p, ul, ol) {
+  margin-top: 0;
+}
+h1 + :is(p, ul, ol) {
+  margin-top: var(--s3);
+}
+ul,
+ol {
+  padding-left: 1.4em;
+}
+li + li {
+  margin-top: var(--s1);
+}
+em,
+i {
+  font-style: italic;
+}
+strong,
+b {
+  font-weight: 600;
+}
+small {
+  font-size: var(--fs-meta);
+}
+
+.prose > * {
+  max-width: var(--measure);
+}
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Metadata voice: mono, small, muted. Used for years, stacks, labels, nav. */
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+pre {
+  overflow-x: auto;
+  padding: var(--s3);
+  border: 1px solid var(--rule);
+}
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin-block: var(--s5);
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--muted);
+}
+a:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: var(--s2);
+  padding: var(--s2) var(--s3);
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  transform: translateY(-300%);
+}
+.skip-link:focus {
+  transform: none;
+  z-index: 10;
+}
+
+/* ---------- header / nav ---------- */
+.site-header {
+  padding-block: var(--s3) var(--s2);
+}
+.site-header .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--s4);
+}
+.brand {
+  font-size: var(--fs-lead);
+  font-weight: 600;
+  line-height: var(--lh-head);
+  text-decoration: none;
+}
+.brand:hover {
+  text-decoration: underline;
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--s3);
+}
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem; /* comfortable touch target without changing the look */
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-decoration: none;
+  text-transform: lowercase;
+}
+.nav a::before {
+  content: "/";
+}
+.nav a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+}
+.nav a[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+}
+
+/* ---------- footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding-block: 1.15rem;
+}
+
+.footer-layout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem 1.5rem;
+}
+
+.footer-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.footer-credit strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.footer-star {
+  color: var(--accent);
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.footer-credit:hover {
+  color: var(--ink);
+}
+
+.footer-credit:hover .footer-star {
+  transform: rotate(20deg);
+}
+
+.footer-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem 1rem;
+}
+
+.footer-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1rem;
+}
+
+.site-footer a {
+  color: var(--muted);
+}
+
+.site-footer a:hover {
+  color: var(--accent);
+}
+
+.footer-contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.footer-contact svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Compact theme control, using the archive's existing palette. */
+.theme-toggle {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.4rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.theme-icon {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 40em) {
+  .footer-layout {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .footer-end {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .footer-contacts {
+    gap: 0.25rem 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-credit,
+  .footer-star,
+  .footer-contact,
+  .theme-toggle {
+    transition: none;
+  }
+}
+
+/* =========================================================
+   Footer microinteractions
+   Restrained, precise, and consistent with the archive.
+   ========================================================= */
+
+:root {
+  --footer-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+  --footer-spring: cubic-bezier(0.2, 0.8, 0.2, 1.12);
+  --footer-motion: 260ms;
+}
+
+/* 1. Author credit and star */
+
+.site-footer .footer-credit {
+  transition: color var(--footer-motion) var(--footer-ease);
+}
+
+.site-footer .footer-star {
+  display: inline-block;
+  transform-origin: 50% 50%;
+  transition:
+    transform 360ms var(--footer-spring),
+    color 220ms var(--footer-ease);
+}
+
+.site-footer .footer-credit:hover,
+.site-footer .footer-credit:focus-visible {
+  color: var(--ink);
+}
+
+.site-footer .footer-credit:hover .footer-star,
+.site-footer .footer-credit:focus-visible .footer-star {
+  transform: rotate(45deg) scale(1.14);
+}
+
+.site-footer .footer-credit:active .footer-star {
+  transform: rotate(30deg) scale(0.92);
+  transition-duration: 100ms;
+}
+
+/* 2. Email links: envelope motion and fine underline reveal */
+
+.site-footer .footer-contact {
+  transition: color 220ms var(--footer-ease);
+}
+
+.site-footer .footer-contact span {
+  position: relative;
+}
+
+.site-footer .footer-contact span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.22em;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 280ms var(--footer-ease);
+  pointer-events: none;
+}
+
+.site-footer .footer-contact svg {
+  transform-origin: 50% 50%;
+  transition:
+    transform 280ms var(--footer-spring),
+    color 220ms var(--footer-ease);
+}
+
+.site-footer .footer-contact:hover,
+.site-footer .footer-contact:focus-visible {
+  color: var(--ink);
+}
+
+.site-footer .footer-contact:hover span::after,
+.site-footer .footer-contact:focus-visible span::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.site-footer .footer-contact:hover svg,
+.site-footer .footer-contact:focus-visible svg {
+  transform: translateY(-1.5px) rotate(-6deg) scale(1.04);
+}
+
+.site-footer .footer-contact:active {
+  transform: scale(0.98);
+}
+
+/* 3. Borderless theme control
+   No permanent border, box, pill, or background. */
+
+.site-footer .theme-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0.35rem 0.1rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 220ms var(--footer-ease);
+}
+
+.site-footer .theme-toggle::after {
+  content: none;
+}
+
+.site-footer .theme-toggle:hover {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+}
+
+.site-footer .theme-icon {
+  flex: 0 0 auto;
+  transform-origin: 50% 50%;
+  transition:
+    transform 420ms var(--footer-spring),
+    color 220ms var(--footer-ease);
+}
+
+/* Theme changes animate the icon through a restrained rotation. */
+.site-footer .theme-toggle[aria-pressed="false"] .theme-icon {
+  transform: rotate(0deg) scale(1);
+}
+
+.site-footer .theme-toggle[aria-pressed="true"] .theme-icon {
+  transform: rotate(180deg) scale(0.92);
+}
+
+.site-footer .theme-toggle:hover .theme-icon {
+  color: var(--accent);
+}
+
+.site-footer .theme-toggle:active .theme-icon {
+  transform: scale(0.84);
+  transition-duration: 100ms;
+}
+
+/* Label underline, matching the email links. */
+
+.site-footer .theme-label {
+  position: relative;
+}
+
+.site-footer .theme-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.22em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 250ms var(--footer-ease);
+  pointer-events: none;
+}
+
+.site-footer .theme-toggle:hover .theme-label::after,
+.site-footer .theme-toggle:focus-visible .theme-label::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Visible keyboard focus without bringing back a rectangular box. */
+
+.site-footer .theme-toggle:focus-visible .theme-icon {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.site-footer .footer-credit:focus-visible,
+.site-footer .footer-contact:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* 4. Reduced-motion preference */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer .footer-credit,
+  .site-footer .footer-star,
+  .site-footer .footer-contact,
+  .site-footer .footer-contact svg,
+  .site-footer .footer-contact span::after,
+  .site-footer .theme-toggle,
+  .site-footer .theme-icon,
+  .site-footer .theme-label::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .site-footer .footer-credit:hover .footer-star,
+  .site-footer .footer-credit:focus-visible .footer-star,
+  .site-footer .footer-contact:hover svg,
+  .site-footer .footer-contact:focus-visible svg,
+  .site-footer .theme-toggle[aria-pressed="true"] .theme-icon,
+  .site-footer .theme-toggle[aria-pressed="false"] .theme-icon,
+  .site-footer .theme-toggle:active .theme-icon {
+    transform: none !important;
+  }
+}

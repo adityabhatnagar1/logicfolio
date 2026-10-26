@@ -1,0 +1,40 @@
+---
+// One design: plain block. Several designs: accessible tabs (behaviour in scripts/tabs.ts).
+interface Props {
+  designs: { name: string; html: string }[];
+}
+const { designs } = Astro.props;
+---
+
+{
+  designs.length > 1 ? (
+    <div class="tabs" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Design files">
+        {designs.map((d, i) => (
+          <button
+            type="button"
+            role="tab"
+            class="tab"
+            id={`design-tab-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            aria-controls={`design-panel-${i}`}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            {d.name}
+          </button>
+        ))}
+      </div>
+      {designs.map((d, i) => (
+        <div role="tabpanel" id={`design-panel-${i}`} aria-labelledby={`design-tab-${i}`} hidden={i !== 0} set:html={d.html} />
+      ))}
+    </div>
+  ) : (
+    designs.map((d) => <div set:html={d.html} />)
+  )
+}
+<noscript>
+  <style is:inline>
+    [data-tabs] .tablist { display: none; }
+    [data-tabs] [role="tabpanel"][hidden] { display: block !important; }
+  </style>
+</noscript>

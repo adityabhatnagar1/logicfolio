@@ -1,0 +1,58 @@
+---
+// Archive browser: categories expand to their components. Drawer on mobile (scripts/drawer.ts).
+import { getCategories, categoryHref, componentHref } from '../lib/archive';
+
+interface Props {
+  category?: string;
+  component?: string;
+}
+const { category, component } = Astro.props;
+const categories = getCategories();
+---
+
+<aside class="sidebar" id="archive-nav">
+  <div class="side-head">
+    <span class="meta">Collection</span>
+    <button class="drawer-close" type="button" data-drawer-close>Close</button>
+  </div>
+  <nav aria-label="Collection">
+    {
+      categories.length === 0 ? (
+        <p class="meta">The collection is empty.</p>
+      ) : (
+        <ul class="side-tree" role="list">
+          {categories.map((cat) => {
+            const open = cat.slug === category;
+            const listId = `tree-${cat.slug}`;
+            return (
+              <li>
+                <div class="side-cat">
+                  <a href={categoryHref(cat)} aria-current={open && !component ? 'page' : undefined}>{cat.name}</a>
+                  <span class="meta">
+                    {cat.components.length}
+                    <span class="visually-hidden"> components</span>
+                  </span>
+                  <button
+                    class="tree-toggle"
+                    type="button"
+                    data-tree-toggle
+                    aria-expanded={open ? 'true' : 'false'}
+                    aria-controls={listId}
+                    aria-label={`${cat.name} components`}
+                  />
+                </div>
+                <ul class="side-list" id={listId} role="list" hidden={!open}>
+                  {cat.components.map((c) => (
+                    <li>
+                      <a href={componentHref(c)} aria-current={open && c.slug === component ? 'page' : undefined}>{c.name}</a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </nav>
+</aside>

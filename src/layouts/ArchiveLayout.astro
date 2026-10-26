@@ -1,0 +1,205 @@
+---
+import '@fontsource/source-serif-4/latin-400.css';
+import '@fontsource/source-serif-4/latin-400-italic.css';
+import '@fontsource/source-serif-4/latin-600.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '../styles/tokens.css';
+import '../styles/fonts.css';
+import '../styles/base.css';
+import '../styles/archive.css';
+import '../styles/lenis.css';
+import Sidebar from '../components/Sidebar.astro';
+import { site } from '../lib/site';
+import { url } from '../lib/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Landing page: hero h1 is the site name, no header brand/search, drawer-only sidebar. */
+  home?: boolean;
+  /** The /search/ page has its own input, so the header one is dropped there. */
+  headerSearch?: boolean;
+  category?: string;
+  component?: string;
+}
+
+const { title, description = site.description, home = false, headerSearch = true, category, component } = Astro.props;
+const pageTitle = home
+  ? `${site.name} : Engineering Components & Notes`
+  : title
+    ? `${title} · ${site.name}`
+    : site.name;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#f7f6f3" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+
+    <!-- Theme: light by default (as in the template); the footer button saves "dark" in
+         localStorage. Runs before first paint, so there is no flash. -->
+    <script is:inline>
+      (function (d) {
+        var r = d.documentElement, K = 'theme';
+        function current() { return r.dataset.theme === 'dark' ? 'dark' : 'light'; }
+        
+function sync() {
+  var dark = current() === 'dark';
+  var m = d.querySelector('meta[name="theme-color"]');
+
+  if (m) {
+    m.setAttribute('content', dark ? '#141414' : '#f7f6f3');
+  }
+
+  d.querySelectorAll('[data-theme-toggle]').forEach(function (b) {
+    b.setAttribute('aria-pressed', dark ? 'true' : 'false');
+
+    var label = b.querySelector('.theme-label');
+    if (label) label.textContent = dark ? 'Dark' : 'Light';
+
+    var icon = b.querySelector('.theme-icon');
+
+    if (icon) {
+      icon.innerHTML = dark
+        ? '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>'
+        : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>';
+    }
+
+    b.setAttribute(
+      'aria-label',
+      dark ? 'Switch to light theme' : 'Switch to dark theme'
+    );
+  });
+}
+
+        try { if (localStorage.getItem(K) === 'dark') r.dataset.theme = 'dark'; } catch (e) {}
+        sync();
+        d.addEventListener('DOMContentLoaded', sync);
+        d.addEventListener('click', function (e) {
+          if (!e.target.closest || !e.target.closest('[data-theme-toggle]')) return;
+          var next = current() === 'dark' ? 'light' : 'dark';
+          if (next === 'dark') r.dataset.theme = 'dark'; else delete r.dataset.theme;
+          try { localStorage.setItem(K, next); } catch (x) {}
+          sync();
+          d.dispatchEvent(new CustomEvent('themechange'));
+        });
+      })(document);
+    </script>
+  </head>
+  <body class:list={['shell', { 'shell--home': home }]}>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-drawer-inert>
+      <div class="header-row">
+        <button class="nav-toggle" type="button" data-drawer-open aria-expanded="false" aria-controls="archive-nav">Browse</button>
+        {!home && <a class="brand" href={url('/')}>{site.name}</a>}
+        <span class="header-spacer" aria-hidden="true"></span>
+        {
+          !home && headerSearch && (
+            <form class="search-form search-form--header" role="search" action={url('/search/')} method="get">
+              <label class="visually-hidden" for="site-search">Search components and notes</label>
+                <input
+                  id="site-search"
+                  type="search"
+                  name="q"
+                  placeholder="Search components and notes..."
+                  autocomplete="off"
+                  aria-keyshortcuts="/"
+                  data-search-input
+                />
+              <button type="submit">Search</button>
+            </form>
+          )
+        }
+        {
+          (home || !headerSearch) && (
+            <nav class="nav" aria-label="Primary">
+              <a href={url('/search/')} aria-current={!home ? 'page' : undefined}>Search</a>
+            </nav>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="drawer-backdrop" data-drawer-backdrop hidden></div>
+
+    <div class="shell-body">
+      <Sidebar category={category} component={component} />
+      <main id="main" tabindex="-1" data-drawer-inert>
+        <slot />
+      </main>
+    </div>
+
+    
+<footer class="site-footer" data-drawer-inert>
+  <div class="wrap meta footer-layout">
+    <a class="footer-credit" href="mailto:abhatn1.dev@gmail.com">
+      <span class="footer-star" aria-hidden="true">✦</span>
+      <span>Made by <strong>Aditya Bhatnagar</strong></span>
+    </a>
+
+    <div class="footer-end">
+      <nav class="footer-contacts" aria-label="Contact">
+        <a class="footer-contact" href="mailto:abhatn1.dev@gmail.com">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="1.5" />
+            <path d="m4 7 8 6 8-6" />
+          </svg>
+          <span>abhatn1.dev</span>
+        </a>
+
+        <a class="footer-contact" href="mailto:sternenasche@gmail.com">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="1.5" />
+            <path d="m4 7 8 6 8-6" />
+          </svg>
+          <span>sternenasche</span>
+        </a>
+      </nav>
+
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-pressed="false"
+        aria-label="Switch between light and dark themes"
+      >
+        <svg class="theme-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+        <span class="theme-label">Light</span>
+      </button>
+    </div>
+  </div>
+</footer>
+
+
+    <div id="a11y-live" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+      import '../scripts/drawer';
+      import '../scripts/tree';
+      import '../scripts/copy';
+      import '../scripts/hotkey';
+      import Lenis from '../lib/lenis';
+
+      // Lenis honours prefers-reduced-motion by default.
+      new Lenis({
+        autoRaf: true,
+        anchors: true,
+        allowNestedScroll: true,
+        stopInertiaOnNavigate: true,
+      });
+    </script>
+  </body>
+</html>

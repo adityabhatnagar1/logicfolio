@@ -1,0 +1,37 @@
+---
+import ArchiveLayout from '../layouts/ArchiveLayout.astro';
+import { url, baseUrl } from '../lib/paths';
+---
+
+<ArchiveLayout title="Search" headerSearch={false}>
+  <div class="wrap" data-search-page data-base={baseUrl}>
+    <header class="page-head">
+      <h1>Search</h1>
+      {
+        import.meta.env.DEV && (
+          <p class="note meta">
+            Search needs a built index: run <code>npm run build &amp;&amp; npm run preview</code>.
+          </p>
+        )
+      }
+    </header>
+    <form class="search-form search-form--hero" role="search" action={url('/search/')} method="get">
+      <label class="visually-hidden" for="search-input">Search components and notes</label>
+        <input
+          id="search-input"
+          type="search"
+          name="q"
+          placeholder="Search components and notes..."
+          autocomplete="off"
+          aria-keyshortcuts="/"
+          data-search-input
+        />
+      <button type="submit">Search</button>
+    </form>
+    <p class="meta search-status" role="status" aria-live="polite" data-search-status></p>
+    <ol class="index" role="list" data-search-results></ol>
+  </div>
+  <script>
+    import '../scripts/search';
+  </script>
+</ArchiveLayout>

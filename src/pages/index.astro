@@ -1,0 +1,103 @@
+---
+import ArchiveLayout from '../layouts/ArchiveLayout.astro';
+import { site } from '../lib/site';
+import { url } from '../lib/paths';
+import { getCategories, getRecent, categoryHref, componentHref, formatDate, pad } from '../lib/archive';
+
+const categories = getCategories();
+const recent = getRecent(4);
+const total = categories.reduce((n, c) => n + c.components.length, 0);
+---
+
+<ArchiveLayout home description={site.description}>
+  <div class="wrap">
+    <section class="hero" aria-labelledby="name">
+      <div class="hero-copy">
+        <p class="meta hero-count">{site.eyebrow}</p>
+        <h1 id="name">{site.name}</h1>
+        <p class="lead">
+          <strong class="lead-head">{site.tagline}</strong>
+          <span class="lead-sub">{site.intro}</span>
+        </p>
+        <form class="search-form search-form--hero" role="search" action={url('/search/')} method="get">
+          <label class="visually-hidden" for="hero-search">Search components and notes</label>
+            <input
+              id="hero-search"
+              type="search"
+              name="q"
+              placeholder="Search components and notes..."
+              autocomplete="off"
+              aria-keyshortcuts="/"
+              data-search-input
+            />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <figure class="lighthouse" data-hero data-state="loading">
+        <div class="lighthouse-plate" data-hero-plate>
+          <canvas
+            class="lighthouse-canvas"
+            data-hero-canvas
+            width="540"
+            height="960"
+            role="img"
+            aria-label="A one-bit pixel-art lighthouse on a rocky shore. Its beam sweeps slowly across the sea."></canvas>
+        </div>
+        
+      </figure>
+    </section>
+
+    <section class="band" aria-labelledby="categories-heading">
+      <h2 class="label meta" id="categories-heading">Domains</h2>
+      <div class="band-body">
+        {
+          categories.length === 0 ? (
+            <p class="meta">No domains yet. Add a component to get started.</p>
+          ) : (
+            <ol class="entries" role="list">
+              {categories.map((cat, i) => (
+                <li>
+                  <a class="entry" href={categoryHref(cat)}>
+                    <span class="meta entry-no">{pad(i + 1)}</span>
+                    <span class="entry-name">{cat.name}</span>
+                    <span class="meta entry-side">{cat.components.length} {cat.components.length === 1 ? 'component' : 'components'}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          )
+        }
+      </div>
+    </section>
+
+    {
+      recent.length > 0 && (
+        <section class="band" aria-labelledby="recent-heading">
+          <h2 class="label meta" id="recent-heading">Recently added</h2>
+          <div class="band-body">
+            <ol class="entries entries--recent" role="list">
+              {recent.map((c) => (
+                <li>
+                  <a class="entry" href={componentHref(c)}>
+                    <span class="meta entry-no">{formatDate(c.updated)}</span>
+                    <span class="entry-name">{c.name}</span>
+                    <span class="meta entry-side">{c.categoryName}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  <script>
+    import { mountLighthouseHero } from '../lib/lighthouse-hero';
+    const figure = document.querySelector<HTMLElement>('[data-hero]');
+    const plate = document.querySelector<HTMLElement>('[data-hero-plate]');
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-canvas]');
+    if (figure && plate && canvas) mountLighthouseHero(canvas, plate, figure);
+  </script>
+</ArchiveLayout>

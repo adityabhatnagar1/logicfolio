@@ -1,0 +1,78 @@
+/* tokens.css: every colour, font, spacing step and radius lives here.
+   Restyle the whole archive by editing this file only. */
+
+:root {
+  /* Light by default, like the landing template. The footer toggle sets [data-theme="dark"]
+     (saved in localStorage). The OS preference is deliberately ignored. */
+  color-scheme: light;
+
+  /* palette: light-dark(light, dark). Text-on-bg ratios (AA): ink 16.1/15.4,
+     muted 6.4/7.4, accent 7.6/7.4. */
+  --bg: light-dark(#f7f6f3, #141414);
+  --ink: light-dark(#1a1a1a, #ecebe7);
+  --muted: light-dark(#5a5a57, #a4a4a0);
+  --accent: light-dark(#8f2d1f, #e0907e);
+  --rule: light-dark(#cfcdc7, #3a3a38);
+  --panel: light-dark(#efede8, #1b1b1a);
+  --code-bg: light-dark(#ffffff, #0a0c10); /* matches the high-contrast Shiki themes */
+
+  /* Lighthouse shader palette (ink on paper). Plain hex on purpose: the shader parses
+     "#rrggbb" and light-dark() cannot be read back from JS. Keep in step with --bg / --ink.
+     --shader-dark paints the sea and shadows, --shader-light paints land, waves and beam. */
+  --shader-dark: #f7f6f3;
+  --shader-light: #1a1a1a;
+
+  /* type families (fallbacks are metric-matched in fonts.css) */
+  --font-serif:
+    "Source Serif 4", "Source Serif 4 Fallback", Georgia, "Times New Roman",
+    serif;
+  --font-display: "Cormorant Garamond", "Source Serif 4", Georgia, serif;
+  --font-mono:
+    "IBM Plex Mono", "IBM Plex Mono Fallback", ui-monospace, "SF Mono", Menlo,
+    Consolas, monospace;
+
+  /* type scale */
+  --fs-meta: 0.8125rem;
+  --fs-body: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
+  --fs-lead: 1.25rem;
+  --fs-h3: 1.4rem;
+  --fs-h2: clamp(1.5rem, 1.2rem + 1.2vw, 1.8rem);
+  --fs-h1: clamp(2rem, 1.4rem + 2.6vw, 2.6rem);
+  --lh-body: 1.5;
+  --lh-head: 1.2;
+  --lh-meta: 1.4;
+
+  /* spacing (4px base) */
+  --s1: 0.25rem;
+  --s2: 0.5rem;
+  --s3: 1rem;
+  --s4: 1.5rem;
+  --s5: 2rem;
+  --s6: 3rem;
+  --s7: 4.5rem;
+
+  /* radii: editorial = square */
+  --radius: 0;
+
+  /* layout */
+  --page: 58rem;
+  --measure: 65ch;
+  --gutter: 1rem;
+  --sidebar: 17rem;
+
+  /* label shown by the theme toggle (CSS-only) */
+  --mode-name: "light";
+}
+
+@media (min-width: 40em) {
+  :root {
+    --gutter: 1.6rem;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --shader-dark: #141414;
+  --shader-light: #ecebe7;
+  --mode-name: "dark";
+}

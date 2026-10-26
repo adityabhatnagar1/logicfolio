@@ -1,0 +1,119 @@
+---
+import 'katex/dist/katex.min.css';
+import ArchiveLayout from '../../../layouts/ArchiveLayout.astro';
+import DesignTabs from '../../../components/DesignTabs.astro';
+import { url } from '../../../lib/paths';
+import { renderCode } from '../../../lib/highlight';
+import { renderMarkdown } from '../../../lib/markdown';
+import { getCategories, getCategory, categoryHref, componentHref, assetHref, formatDate } from '../../../lib/archive';
+
+export function getStaticPaths() {
+  return getCategories().flatMap((cat) =>
+    cat.components.map((c) => ({ params: { category: cat.slug, component: c.slug } })),
+  );
+}
+
+const category = getCategory(Astro.params.category ?? '');
+const index = category?.components.findIndex((c) => c.slug === Astro.params.component) ?? -1;
+const component = category?.components[index];
+if (!category || !component) throw new Error(`Unknown component: ${Astro.params.category}/${Astro.params.component}`);
+
+const previous = category.components[index - 1];
+const next = category.components[index + 1];
+
+const designs = await Promise.all(component.designs.map(async (d) => ({ name: d.name, html: await renderCode(d.code, d.name) })));
+const testbenches = await Promise.all(component.testbenches.map((t) => renderCode(t.code, t.name)));
+const readmeHtml = component.readme ? await renderMarkdown(component.readme, 2) : '';
+const notes = await Promise.all(
+  component.notes.map(async (n) => ({
+    name: n.name,
+    html: n.format === 'md' ? await renderMarkdown(n.text, 3) : await renderCode(n.text, n.name, 'text'),
+  })),
+);
+---
+
+<ArchiveLayout
+  title={`${component.name} (${category.name})`}
+  description={component.summary || `${component.name}, ${category.name}`}
+  category={category.slug}
+  component={component.slug}
+>
+  <div class="wrap">
+    <article data-pagefind-body data-pagefind-meta={`category:${category.name}`}>
+      <header class="page-head">
+        <nav class="meta" aria-label="Breadcrumb" data-pagefind-ignore>
+          <a href={url('/')}>Logicfolio</a> / <a href={categoryHref(category)}>{category.name}</a>
+        </nav>
+        <h1>{component.name}</h1>
+        <p class="meta" data-pagefind-ignore>{category.name} · updated {formatDate(component.updated)}</p>
+        {
+          (previous || next) && (
+            <nav class="pager meta" aria-label={`More in ${category.name}`} data-pagefind-ignore>
+              {previous ? <a rel="prev" href={componentHref(previous)}><span aria-hidden="true">←</span> {previous.name}</a> : <span />}
+              {next ? <a rel="next" href={componentHref(next)}>{next.name} <span aria-hidden="true">→</span></a> : <span />}
+            </nav>
+          )
+        }
+      </header>
+
+      {
+        designs.length > 0 && (
+          <section aria-labelledby="design-heading">
+            <h2 id="design-heading">{designs.length > 1 ? 'Designs' : 'Design'}</h2>
+            <DesignTabs designs={designs} />
+          </section>
+        )
+      }
+
+      {
+        testbenches.length > 0 && (
+          <section aria-labelledby="testbench-heading">
+            <h2 id="testbench-heading">{testbenches.length > 1 ? 'Testbenches' : 'Testbench'}</h2>
+            {testbenches.map((html) => <div set:html={html} />)}
+          </section>
+        )
+      }
+
+      {
+        readmeHtml && (
+          <section aria-labelledby="notes-heading">
+            <h2 id="notes-heading">Notes</h2>
+            <div class="prose" set:html={readmeHtml} />
+          </section>
+        )
+      }
+
+      {
+        notes.length > 0 && (
+          <section aria-labelledby="extra-heading">
+            <h2 id="extra-heading">Additional notes</h2>
+            {notes.map((n) => (
+              <>
+                <h3 class="filename">{n.name}</h3>
+                <div class="prose" set:html={n.html} />
+              </>
+            ))}
+          </section>
+        )
+      }
+
+      {
+        component.assets.length > 0 && (
+          <section aria-labelledby="files-heading">
+            <h2 id="files-heading">Files</h2>
+            <ul class="file-list" role="list">
+              {component.assets.map((a) => (
+                <li>
+                  <a href={assetHref(component, a)}>{a.name}</a> <span class="meta">{a.kind === 'pdf' ? 'PDF' : 'Image'}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </article>
+  </div>
+  <script>
+    import '../../../scripts/tabs';
+  </script>
+</ArchiveLayout>

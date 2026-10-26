@@ -1,0 +1,13 @@
+---
+import ArchiveLayout from '../layouts/ArchiveLayout.astro';
+import { url } from '../lib/paths';
+---
+
+<ArchiveLayout title="Not found">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Not found</h1>
+      <p class="lead">That page isn't here. <a href={url('/')}>Back to Logicfolio</a>.</p>
+    </header>
+  </div>
+</ArchiveLayout>
