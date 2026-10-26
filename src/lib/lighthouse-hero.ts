@@ -50,11 +50,21 @@ const SHADER_SETTINGS: Record<string, unknown> = {
   waveSpeed: 1.8,
   waveScale: 1,
   waveDots: 0.55,
-  dark: "#000000",
-  light: "#ffffff",
+  // dark: "#000000",
+  // light: "#ffffff",
   beamTint: true,
-  beamColor: "#ffd9a0",
+  // beamColor: "#ffd9a0",
 };
+
+function readShaderPalette(): Record<string, unknown> {
+  const styles = getComputedStyle(document.documentElement);
+
+  return {
+    dark: styles.getPropertyValue("--shader-dark").trim() || "#f7f6f3",
+    light: styles.getPropertyValue("--shader-light").trim() || "#1a1a1a",
+    beamColor: styles.getPropertyValue("--shader-beam").trim() || "#8c5d00",
+  };
+}
 
 export function mountLighthouseHero(
   canvas: HTMLCanvasElement,
@@ -71,7 +81,7 @@ export function mountLighthouseHero(
   try {
     lh = api.mount(canvas, {
       fit: false,
-      settings: SHADER_SETTINGS,
+      settings: { ...SHADER_SETTINGS, ...readShaderPalette() },
       onError: fallback,
     });
   } catch {
@@ -196,16 +206,17 @@ export function mountLighthouseHero(
   };
 
   // The theme must not overwrite your explicit black-and-white palette.
-  const onThemeChange = () => {
-    lh.dirty = true;
-    lh.draw();
-  };
+  // const onThemeChange = () => {
+  //   Object.assign(lh.S, readShaderPalette());
+  //   lh.dirty = true;
+  //   lh.draw();
+  // };
 
   document.addEventListener("visibilitychange", sync);
 
   reduced.addEventListener("change", onReducedMotionChange);
 
-  document.addEventListener("themechange", onThemeChange);
+  // document.addEventListener("themechange", onThemeChange);
 
   // Clean up if the document is permanently unloaded.
   const cleanup = () => {

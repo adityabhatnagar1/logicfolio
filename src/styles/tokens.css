@@ -11,16 +11,20 @@
   --bg: light-dark(#f7f6f3, #141414);
   --ink: light-dark(#1a1a1a, #ecebe7);
   --muted: light-dark(#5a5a57, #a4a4a0);
-  --accent: light-dark(#8f2d1f, #e0907e);
+  --accent: light-dark(#8c5d00, #ffbf47);
   --rule: light-dark(#cfcdc7, #3a3a38);
   --panel: light-dark(#efede8, #1b1b1a);
-  --code-bg: light-dark(#ffffff, #0a0c10); /* matches the high-contrast Shiki themes */
+  --code-bg: light-dark(
+    #ffffff,
+    #0a0c10
+  ); /* matches the high-contrast Shiki themes */
 
   /* Lighthouse shader palette (ink on paper). Plain hex on purpose: the shader parses
      "#rrggbb" and light-dark() cannot be read back from JS. Keep in step with --bg / --ink.
      --shader-dark paints the sea and shadows, --shader-light paints land, waves and beam. */
   --shader-dark: #f7f6f3;
   --shader-light: #1a1a1a;
+  --shader-beam: #8c5d00;
 
   /* type families (fallbacks are metric-matched in fonts.css) */
   --font-serif:
@@ -74,5 +78,6 @@
   color-scheme: dark;
   --shader-dark: #141414;
   --shader-light: #ecebe7;
+  --shader-beam: #ffbf47;
   --mode-name: "dark";
 }

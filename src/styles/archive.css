@@ -757,17 +757,30 @@ h2 {
   transform: scale(0.96);
 }
 
-/* Browse: the rear folio peeks out on interaction. */
-.nav-icon--browse .folio-back {
+/* Browse: technical archive 4-quadrant grid interaction */
+.nav-icon--browse .browse-cell {
   transform-box: fill-box;
   transform-origin: center;
-  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    fill 180ms ease,
+    stroke 180ms ease;
 }
 
-.nav-icon-btn:hover .nav-icon--browse .folio-back,
-.nav-icon-btn:focus-visible .nav-icon--browse .folio-back,
-.nav-icon-btn[aria-expanded="true"] .nav-icon--browse .folio-back {
-  transform: translate(1px, -1px);
+.nav-icon--browse .browse-cell--tr {
+  fill: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.nav-icon-btn:hover .nav-icon--browse .browse-cell--tr,
+.nav-icon-btn:focus-visible .nav-icon--browse .browse-cell--tr,
+.nav-icon-btn[aria-expanded="true"] .nav-icon--browse .browse-cell--tr {
+  transform: translate(1.5px, -1.5px);
+  fill: var(--accent);
+}
+
+.nav-icon-btn:hover .nav-icon--browse .browse-cell--bl,
+.nav-icon-btn:focus-visible .nav-icon--browse .browse-cell--bl {
+  transform: translate(-0.5px, 0.5px);
 }
 
 .nav-icon-btn[aria-expanded="true"] {
@@ -871,9 +884,12 @@ h2 {
 
 .search-form {
   box-sizing: border-box;
+  display: flex;
+  align-items: center;
   width: 100%;
   padding: 0;
   border: 1px solid var(--rule);
+  border-radius: var(--radius);
   background: var(--panel);
   transition:
     border-color 180ms ease,
@@ -920,24 +936,23 @@ h2 {
   0% {
     transform: scale(1);
   }
-
   45% {
     transform: scale(1.12);
   }
-
   100% {
     transform: scale(1);
   }
 }
 
-/* Input: retain the existing monospace treatment. */
+/* Input */
 .search-form input[type="search"] {
   box-sizing: border-box;
   flex: 1 1 0%;
   min-width: 0;
-  padding: 0 1rem 0 0;
+  height: 100%;
+  padding: 0 0.5rem 0 0;
   border: 0;
-  border-radius: var(--radius);
+  border-radius: 0;
   background: transparent;
   color: var(--ink);
   font-family: var(--font-mono);
@@ -945,6 +960,11 @@ h2 {
   line-height: 1.4;
   outline: none;
   box-shadow: none;
+}
+
+.search-form input[type="search"]::-webkit-search-decoration,
+.search-form input[type="search"]::-webkit-search-cancel-button {
+  display: none;
 }
 
 .search-form input[type="search"]::placeholder {
@@ -957,6 +977,29 @@ h2 {
   opacity: 0.55;
 }
 
+/* Hotkey hint tag */
+.search-hotkey-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15em 0.45em;
+  margin-right: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 60%, var(--panel));
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+@media (max-width: 36em) {
+  .search-hotkey-hint {
+    display: none;
+  }
+}
+
 /* Submit button */
 .search-form button[type="submit"] {
   box-sizing: border-box;
@@ -965,10 +1008,11 @@ h2 {
   align-items: center;
   justify-content: center;
   min-width: 3.25rem;
+  height: 100%;
   padding: 0 1rem;
   border: 0;
   border-left: 1px solid var(--rule);
-  border-radius: var(--radius);
+  border-radius: 0;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
@@ -1008,18 +1052,318 @@ h2 {
   transform: translateX(3px);
 }
 
-/* Compact header form */
+/* Form variants */
+.search-form--hero {
+  margin-top: var(--s4);
+  max-width: 32rem;
+  height: 3.25rem;
+}
+
+.search-form--page {
+  margin-top: var(--s4);
+  max-width: 36rem;
+  height: 3.25rem;
+}
+
+.search-form--header {
+  height: 2.25rem;
+  max-width: 22rem;
+}
+
 .search-form--header .search-leading {
-  flex-basis: 36px;
+  flex-basis: 34px;
 }
 
 .search-form--header .search-leading svg,
 .search-form--header .search-arrow {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
 }
 
 .search-form--header button[type="submit"] {
-  min-width: 2.5rem;
-  padding-inline: 0.75rem;
+  min-width: 2.25rem;
+  padding-inline: 0.5rem;
+}
+
+/* ============================================================
+   Task 3: Refined Domains & Recently Added Discovery Layout
+   ============================================================ */
+
+.home-discovery-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+  margin-top: var(--s6);
+}
+
+.band--domains,
+.band--recent {
+  display: block;
+  margin-top: 0;
+  padding-top: var(--s4);
+  border-top: 1px solid var(--rule);
+}
+
+.band-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s1);
+  margin-bottom: var(--s4);
+  padding-inline: var(--s3);
+}
+
+.band-header .label {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: var(--fs-h3);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: none;
+}
+
+/* small amber marker before each section heading */
+.band-header .label::before {
+  content: "";
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  background: var(--accent);
+}
+
+.band-subtitle {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+/* Domains index: one ledger row per category */
+.domain-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 1px solid var(--rule);
+}
+
+.domain-card {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr) 9rem;
+  align-items: baseline;
+  gap: var(--s3);
+  min-height: 3rem;
+  padding: var(--s3);
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  transition: background-color 180ms ease;
+}
+
+.domain-card-main {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.domain-card-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--ink);
+  transition: color 180ms ease;
+}
+
+.domain-card-count {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.domain-card::after {
+  content: "\2192";
+  content: "\2192" / "";
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  color: var(--muted);
+  transition: color 180ms ease;
+}
+
+.domain-card:hover {
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+  text-decoration: none;
+}
+
+.domain-card:hover .domain-card-title,
+.domain-card:hover::after,
+.domain-card:focus-visible::after {
+  color: var(--accent);
+}
+
+.domain-card:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Recently added: same row grid, date | title | category */
+.recent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.recent-item {
+  margin: 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.recent-link {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr) 9rem;
+  align-items: baseline;
+  gap: var(--s3);
+  min-height: 3rem;
+  padding: var(--s3);
+  text-decoration: none;
+  transition: background-color 180ms ease;
+}
+
+.recent-link:hover {
+  background: color-mix(in srgb, var(--accent) 5%, var(--bg));
+  text-decoration: none;
+}
+
+.recent-link:focus-visible {
+  outline-offset: -2px;
+}
+
+/* lets title and category sit directly on the row grid; the date is placed in column 1 */
+.recent-primary {
+  display: contents;
+}
+
+.recent-date {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.recent-title {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--ink);
+  transition: color 180ms ease;
+}
+
+.recent-link:hover .recent-title,
+.recent-link:focus-visible .recent-title {
+  color: var(--accent);
+}
+
+.recent-tag {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+@media (max-width: 36em) {
+  .domain-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s1) var(--s3);
+    align-items: center;
+  }
+  .domain-card-count {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .domain-card-main {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .domain-card::after {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .recent-link {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s1);
+  }
+  .recent-date {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .recent-title {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .recent-tag {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: start;
+    text-align: left;
+  }
+}
+
+/* Homepage search: centered above the hero. */
+.shell--home .hero {
+  padding-top: 0;
+}
+
+.search-form--home {
+  width: 100%;
+  height: 3.5rem;
+  margin: 0 0 var(--s5);
+}
+
+.search-form--home input,
+.search-form--home button[type="submit"] {
+  min-height: 3.5rem;
+}
+
+@media (max-width: 36em) {
+  .search-form--home .search-leading {
+    flex-basis: 2.75rem;
+  }
+
+  .search-form--home button[type="submit"] {
+    min-width: 2.75rem;
+    padding-inline: 0.65rem;
+  }
+}
+
+/* Desktop hero: lighthouse plate matches the copy block instead of a tall 4:5 portrait */
+@media (min-width: 46em) {
+  .hero {
+    align-items: stretch;
+  }
+  .hero-copy {
+    align-self: center;
+  }
+  .lighthouse {
+    height: 100%;
+  }
+  .lighthouse-plate {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 24rem;
+  }
+}
+
+/* Home header: optically align the search icon's glyph with the content's right edge */
+.shell--home .nav-icon-btn {
+  margin-right: -10px;
 }

@@ -101,38 +101,31 @@ function sync() {
     <header class="site-header" data-drawer-inert>
       <div class="header-row">
         <button
-  class="nav-toggle nav-icon-btn"
-  type="button"
-  data-drawer-open
-  aria-expanded="false"
-  aria-controls="archive-nav"
-  aria-label="Browse collection"
->
-  <svg
-    class="nav-icon nav-icon--browse"
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <rect
-      class="folio-front"
-      x="2.75"
-      y="5.75"
-      width="11.5"
-      height="11.5"
-    />
-    <path
-      class="folio-back"
-      d="M6.25 5.75 V2.75 H17.25 V13.75 H14.25"
-    />
-  </svg>
-</button>
+          class="nav-toggle nav-icon-btn"
+          type="button"
+          data-drawer-open
+          aria-expanded="false"
+          aria-controls="archive-nav"
+          aria-label="Browse collection"
+        >
+          <svg
+            class="nav-icon nav-icon--browse"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect class="browse-cell browse-cell--tl" x="3" y="3" width="6" height="6" rx="1" />
+            <rect class="browse-cell browse-cell--tr" x="11" y="3" width="6" height="6" rx="1" />
+            <rect class="browse-cell browse-cell--bl" x="3" y="11" width="6" height="6" rx="1" />
+            <rect class="browse-cell browse-cell--br" x="11" y="11" width="6" height="6" rx="1" />
+          </svg>
+        </button>
         {
   !home && (
     <a class="brand" href={url('/')}>
@@ -161,16 +154,27 @@ function sync() {
           !home && headerSearch && (
             <form class="search-form search-form--header" role="search" action={url('/search/')} method="get">
               <label class="visually-hidden" for="site-search">Search components and notes</label>
-                <input
-                  id="site-search"
-                  type="search"
-                  name="q"
-                  placeholder="Search components and notes..."
-                  autocomplete="off"
-                  aria-keyshortcuts="/"
-                  data-search-input
-                />
-              <button type="submit">Search</button>
+              <span class="search-leading" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="8.5" cy="8.5" r="4.75" />
+                  <line x1="12.2" y1="12.2" x2="16.5" y2="16.5" />
+                </svg>
+              </span>
+              <input
+                id="site-search"
+                type="search"
+                name="q"
+                placeholder="Search..."
+                autocomplete="off"
+                aria-keyshortcuts="/"
+                data-search-input
+              />
+              <kbd class="search-hotkey-hint" aria-hidden="true">/</kbd>
+              <button type="submit" aria-label="Submit search">
+                <svg class="search-arrow" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 10 H16 M11 5 L16 10 L11 15" />
+                </svg>
+              </button>
             </form>
           )
         }
