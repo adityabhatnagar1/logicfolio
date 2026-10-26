@@ -205,13 +205,32 @@ a:hover {
   column-gap: var(--s4);
 }
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: var(--fs-lead);
   font-weight: 600;
   line-height: var(--lh-head);
   text-decoration: none;
 }
-.brand:hover {
-  text-decoration: underline;
+
+.brand-mark {
+  display: block;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 auto;
+}
+
+.brand-mark--dark {
+  display: none;
+}
+
+:root[data-theme="dark"] .brand-mark--light {
+  display: none;
+}
+
+:root[data-theme="dark"] .brand-mark--dark {
+  display: block;
 }
 .nav {
   display: flex;
