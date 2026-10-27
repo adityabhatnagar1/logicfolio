@@ -1,0 +1,25 @@
+---
+interface Props {
+  label: string;
+  /** Category slug used in ?category=; empty for the "All" chip. */
+  slug?: string;
+  /** Category name as indexed by Pagefind; empty for the "All" chip. */
+  value?: string;
+  count?: number;
+  pressed?: boolean;
+}
+const { label, slug = '', value = '', count, pressed = false } = Astro.props;
+---
+
+<button
+  type="button"
+  class="filter-chip"
+  data-motion="filter-chip"
+  data-filter-chip
+  data-slug={slug}
+  data-value={value}
+  aria-pressed={pressed ? 'true' : 'false'}
+>
+  <span class="filter-chip-label">{label}</span>
+  {count !== undefined && <span class="filter-chip-count" data-chip-count>{count}</span>}
+</button>

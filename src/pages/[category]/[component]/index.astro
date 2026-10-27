@@ -2,6 +2,7 @@
 import 'katex/dist/katex.min.css';
 import ArchiveLayout from '../../../layouts/ArchiveLayout.astro';
 import DesignTabs from '../../../components/DesignTabs.astro';
+import GeneratedPanels from '../../../components/GeneratedPanels.astro';
 import { url } from '../../../lib/paths';
 import { renderCode } from '../../../lib/highlight';
 import { renderMarkdown } from '../../../lib/markdown';
@@ -17,6 +18,13 @@ const category = getCategory(Astro.params.category ?? '');
 const index = category?.components.findIndex((c) => c.slug === Astro.params.component) ?? -1;
 const component = category?.components[index];
 if (!category || !component) throw new Error(`Unknown component: ${Astro.params.category}/${Astro.params.component}`);
+
+const g = component.generated;
+const pagefindMeta = [
+  `updated:${formatDate(component.updated)}`,
+  `gen:${g.status}`,
+  ...(g.circuitBlock ? [`thumb:/${category.slug}/${component.slug}/circuit.svg`] : []),
+];
 
 const previous = category.components[index - 1];
 const next = category.components[index + 1];
@@ -39,7 +47,8 @@ const notes = await Promise.all(
   component={component.slug}
 >
   <div class="wrap">
-    <article data-pagefind-body data-pagefind-meta={`category:${category.name}`}>
+    <article data-pagefind-body data-pagefind-meta={`category:${category.name}`} data-pagefind-filter={`category:${category.name}`}>
+      {pagefindMeta.map((m) => <span hidden data-pagefind-meta={m}></span>)}
       <header class="page-head">
         <nav class="meta" aria-label="Breadcrumb" data-pagefind-ignore>
           <a href={url('/')}>Logicfolio</a> / <a href={categoryHref(category)}>{category.name}</a>
@@ -73,6 +82,8 @@ const notes = await Promise.all(
           </section>
         )
       }
+
+      <GeneratedPanels generated={component.generated} />
 
       {
         readmeHtml && (
@@ -115,5 +126,6 @@ const notes = await Promise.all(
   </div>
   <script>
     import '../../../scripts/tabs';
+    import '../../../scripts/circuit-toggle';
   </script>
 </ArchiveLayout>

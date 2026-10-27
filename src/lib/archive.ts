@@ -6,12 +6,34 @@ import { execFileSync } from 'node:child_process';
 import { url } from './paths';
 
 const ARCHIVE_DIR = path.resolve(process.cwd(), 'archive');
+const GENERATED_DIR = path.resolve(process.cwd(), 'src', 'generated');
 const IMAGE_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg']);
 const byName = (a: string, b: string) => a.localeCompare(b, 'en', { numeric: true });
 
 export interface SourceFile { name: string; code: string }
 export interface NoteFile { name: string; text: string; format: 'md' | 'txt' }
 export interface AssetFile { name: string; kind: 'image' | 'pdf'; absolutePath: string }
+
+export interface PortInfo { name: string; direction: 'input' | 'output' | 'inout'; width: number }
+export interface TruthTable {
+  inputs: { name: string; width: number }[];
+  outputs: { name: string; width: number }[];
+  rows: string[][];
+}
+export interface GeneratedInfo {
+  /** "missing" when scripts/generate.mjs has not produced output for this folder. */
+  status: 'ok' | 'error' | 'missing';
+  stage?: string;
+  message?: string;
+  errors: { stage: string; message: string }[];
+  top: string | null;
+  ports: PortInfo[];
+  truth: TruthTable | null;
+  /** SVG markup (already themed with currentColor), or null when that view was not generated. */
+  circuitBlock: string | null;
+  circuitGate: string | null;
+  wave: string | null;
+}
 
 export interface Component {
   slug: string;
@@ -27,6 +49,7 @@ export interface Component {
   summary: string;
   /** Last git commit date of the folder; file mtime when git has nothing. */
   updated: Date;
+  generated: GeneratedInfo;
 }
 
 export interface Category { slug: string; name: string; components: Component[] }
@@ -90,6 +113,38 @@ function listDirs(dir: string): string[] {
     .sort(byName);
 }
 
+function readText(file: string): string | null {
+  try {
+    return fs.readFileSync(file, 'utf8');
+  } catch {
+    return null;
+  }
+}
+
+function loadGenerated(categorySlug: string, slug: string): GeneratedInfo {
+  const dir = path.join(GENERATED_DIR, categorySlug, slug);
+  const raw = readText(path.join(dir, 'meta.json'));
+  const empty: GeneratedInfo = { status: 'missing', errors: [], top: null, ports: [], truth: null, circuitBlock: null, circuitGate: null, wave: null };
+  if (!raw) return empty;
+  try {
+    const meta = JSON.parse(raw) as Partial<GeneratedInfo>;
+    return {
+      status: meta.status === 'ok' ? 'ok' : 'error',
+      stage: meta.stage,
+      message: meta.message,
+      errors: meta.errors ?? [],
+      top: meta.top ?? null,
+      ports: meta.ports ?? [],
+      truth: meta.truth ?? null,
+      circuitBlock: readText(path.join(dir, 'circuit.block.svg')),
+      circuitGate: readText(path.join(dir, 'circuit.gate.svg')),
+      wave: readText(path.join(dir, 'wave.svg')),
+    };
+  } catch {
+    return { ...empty, status: 'error', stage: 'meta', message: 'meta.json could not be read.' };
+  }
+}
+
 function loadComponent(category: { slug: string; name: string }, slug: string): Component {
   const dir = path.join(ARCHIVE_DIR, category.slug, slug);
   const designs: SourceFile[] = [];
@@ -133,6 +188,7 @@ function loadComponent(category: { slug: string; name: string }, slug: string): 
     assets,
     summary: readme ? summarise(readme) : '',
     updated: lastCommitDate(dir) ?? newestMtime(dir),
+    generated: loadGenerated(category.slug, slug),
   };
 }
 

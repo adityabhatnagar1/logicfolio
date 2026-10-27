@@ -1,4 +1,4 @@
-﻿// Encodes the highest-numbered active line of eight inputs into a 3-bit code with a valid flag.
+// Encodes the highest-numbered active line of eight inputs into a 3-bit code with a valid flag.
 module priority_encoder_8to3 (
     input  wire [7:0] d,
     output wire [2:0] y,

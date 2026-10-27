@@ -1,0 +1,11 @@
+---
+import ResultCard from './ResultCard.astro';
+---
+
+<ol class="index result-list" data-motion="result-list" role="list" data-search-results></ol>
+<template data-result-template>
+  <ResultCard />
+</template>
+<p class="result-more" data-more-wrap hidden>
+  <button type="button" class="filter-chip" data-more>Show more results</button>
+</p>

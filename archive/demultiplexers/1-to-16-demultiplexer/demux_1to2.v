@@ -1,4 +1,4 @@
-﻿// Routes one data input to one of two outputs based on a single select line.
+// Routes one data input to one of two outputs based on a single select line.
 module demux_1to2 (
     input  wire s,
     input  wire i,

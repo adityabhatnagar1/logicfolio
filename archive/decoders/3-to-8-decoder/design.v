@@ -1,4 +1,4 @@
-﻿// Turns a 3-bit code into one active line out of eight, gated by an enable input.
+// Turns a 3-bit code into one active line out of eight, gated by an enable input.
 module decoder_3to8 (
     input  wire       en,
     input  wire [2:0] a,

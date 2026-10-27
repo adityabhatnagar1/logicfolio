@@ -4,6 +4,10 @@ import '@fontsource/source-serif-4/latin-400-italic.css';
 import '@fontsource/source-serif-4/latin-600.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/newsreader/latin-400.css';
+import '@fontsource/newsreader/latin-400-italic.css';
+import '@fontsource/newsreader/latin-500.css';
+import '@fontsource/newsreader/latin-600.css';
 import '../styles/tokens.css';
 import '../styles/fonts.css';
 import '../styles/base.css';
@@ -22,9 +26,11 @@ interface Props {
   headerSearch?: boolean;
   category?: string;
   component?: string;
+  /** Sets data-page on <html>; tokens.css swaps the font family per page. */
+  page?: 'search';
 }
 
-const { title, description = site.description, home = false, headerSearch = true, category, component } = Astro.props;
+const { title, description = site.description, home = false, headerSearch = true, category, component, page } = Astro.props;
 const pageTitle = home
   ? `${site.name} : Engineering Components & Notes`
   : title
@@ -34,7 +40,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-page={page}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

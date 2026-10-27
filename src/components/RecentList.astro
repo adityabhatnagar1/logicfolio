@@ -1,0 +1,35 @@
+---
+import { componentHref, formatDate } from '../lib/archive';
+import type { Component } from '../lib/archive';
+
+interface Props {
+  items: Component[];
+}
+const { items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section class="band band--recent" aria-labelledby="search-recent-heading" data-motion="recent-list">
+      <div class="band-header">
+        <h2 class="label meta" id="search-recent-heading">Recently added</h2>
+        <span class="band-subtitle meta">Latest design additions</span>
+      </div>
+      <div class="band-body">
+        <ol class="recent-list" role="list">
+          {items.map((c) => (
+            <li class="recent-item">
+              <a class="recent-link" href={componentHref(c)}>
+                <div class="recent-primary">
+                  <span class="recent-title">{c.name}</span>
+                  <span class="recent-tag meta">{c.categoryName}</span>
+                </div>
+                <time class="recent-date meta" datetime={formatDate(c.updated)}>{formatDate(c.updated)}</time>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )
+}

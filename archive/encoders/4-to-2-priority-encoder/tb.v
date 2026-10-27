@@ -1,4 +1,4 @@
-﻿`timescale 1ns/1ps
+`timescale 1ns/1ps
 
 module tb_priority_encoder_4to2;
     reg  [3:0] d;

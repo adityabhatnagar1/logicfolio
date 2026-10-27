@@ -81,3 +81,14 @@
   --shader-beam: #ffbf47;
   --mode-name: "dark";
 }
+
+/* /search/ uses one editorial family for every element: the existing family tokens are
+   re-pointed here, so no component sets its own font-family. */
+:root[data-page="search"] {
+  --font-serif:
+    "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+  --font-display:
+    "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+  --font-mono:
+    "Newsreader", "Newsreader Fallback", Georgia, "Times New Roman", serif;
+}

@@ -1,4 +1,4 @@
-﻿// Routes one data input to one of sixteen outputs using a 1:2 demux on S3 feeding two 1:8 demuxes.
+// Routes one data input to one of sixteen outputs using a 1:2 demux on S3 feeding two 1:8 demuxes.
 module demux_1to16 (
     input  wire        i,
     input  wire [3:0]  s,

@@ -1,0 +1,33 @@
+---
+import { categoryHref } from '../lib/archive';
+
+interface Props {
+  categories: { slug: string; name: string; count: number }[];
+}
+const { categories } = Astro.props;
+---
+
+<section class="band band--domains" aria-labelledby="search-domains-heading" data-motion="domain-grid">
+  <div class="band-header">
+    <h2 class="label meta" id="search-domains-heading">Domains</h2>
+    <span class="band-subtitle meta">{categories.length} categories available</span>
+  </div>
+  <div class="band-body">
+    {
+      categories.length === 0 ? (
+        <p class="meta">No domains yet. Add a component to get started.</p>
+      ) : (
+        <div class="domain-grid" role="list">
+          {categories.map((c) => (
+            <a class="domain-card" href={categoryHref(c)} role="listitem">
+              <div class="domain-card-main">
+                <span class="domain-card-title">{c.name}</span>
+              </div>
+              <span class="domain-card-count meta">{c.count} {c.count === 1 ? 'item' : 'items'}</span>
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>

@@ -22,3 +22,13 @@
   descent-override: 27.5%;
   line-gap-override: 0%;
 }
+@font-face {
+  font-family: "Newsreader Fallback";
+  src:
+    local("Times New Roman"), local("Liberation Serif"), local("Tinos"),
+    local("Times");
+  size-adjust: 105.9%;
+  ascent-override: 69.4%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}

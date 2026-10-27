@@ -1,0 +1,25 @@
+---
+import { categoryHref } from '../lib/archive';
+
+interface Props {
+  categories: { slug: string; name: string; count: number }[];
+}
+const { categories } = Astro.props;
+---
+
+<div class="empty-state" data-motion="empty-state">
+  <p class="empty-title">Nothing matched.</p>
+  <p class="meta">Check the spelling, try fewer words, or browse a category instead.</p>
+  <div class="domain-grid" role="list">
+    {
+      categories.map((c) => (
+        <a class="domain-card" href={categoryHref(c)} role="listitem">
+          <div class="domain-card-main">
+            <span class="domain-card-title">{c.name}</span>
+          </div>
+          <span class="domain-card-count meta">{c.count} {c.count === 1 ? 'item' : 'items'}</span>
+        </a>
+      ))
+    }
+  </div>
+</div>

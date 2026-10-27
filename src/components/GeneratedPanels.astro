@@ -1,0 +1,109 @@
+---
+// Circuit + waveform + truth table + ports table, or the reason generation failed.
+import type { GeneratedInfo } from '../lib/archive';
+
+interface Props {
+  generated: GeneratedInfo;
+}
+const { generated: g } = Astro.props;
+const hasCircuit = Boolean(g.circuitBlock || g.circuitGate);
+const first = g.circuitBlock ? 'block' : 'gate';
+const errors = g.errors.length > 0 ? g.errors : g.message ? [{ stage: g.stage ?? 'generator', message: g.message }] : [];
+const show = g.status !== 'missing' && (hasCircuit || g.wave || g.ports.length > 0 || errors.length > 0);
+---
+
+{
+  show && (
+    <section aria-labelledby="circuit-heading" data-pagefind-ignore>
+      <h2 id="circuit-heading">Circuit and waveform</h2>
+      {
+        errors.length > 0 && (
+          <div class="note gen-error" role="alert">
+            <p>Some views could not be generated{g.top ? ` for ${g.top}` : ''}.</p>
+            {errors.map((e) => <p class="meta">{e.stage}: {e.message}</p>)}
+          </div>
+        )
+      }
+      {
+        (hasCircuit || g.wave) && (
+          <div class="viz-grid">
+            {
+              hasCircuit && (
+                <figure class="viz" data-circuit>
+                  <div class="viz-bar">
+                    <span class="meta">Circuit{g.top ? ` · ${g.top}` : ''}</span>
+                    <div class="viz-toggle" role="group" aria-label="Circuit view">
+                      {g.circuitBlock && <button type="button" class="tab" data-circuit-view="block" aria-pressed={first === 'block' ? 'true' : 'false'}>Block</button>}
+                      {g.circuitGate && <button type="button" class="tab" data-circuit-view="gate" aria-pressed={first === 'gate' ? 'true' : 'false'}>Gate</button>}
+                    </div>
+                  </div>
+                  <div class="viz-scroll">
+                    {g.circuitBlock && <div data-circuit-panel="block" hidden={first !== 'block'} set:html={g.circuitBlock} />}
+                    {g.circuitGate && <div data-circuit-panel="gate" hidden={first !== 'gate'} set:html={g.circuitGate} />}
+                  </div>
+                </figure>
+              )
+            }
+            {
+              g.wave && (
+                <figure class="viz">
+                  <div class="viz-bar">
+                    <span class="meta">Waveform</span>
+                  </div>
+                  <div class="viz-scroll" set:html={g.wave} />
+                </figure>
+              )
+            }
+          </div>
+        )
+      }
+      {
+        g.truth && (
+          <>
+            <h3>Truth table</h3>
+            <div class="viz-scroll viz-scroll--table">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    {g.truth.inputs.map((p) => <th scope="col">{p.name}</th>)}
+                    {g.truth.outputs.map((p) => <th scope="col" class="data-out">{p.name}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {g.truth.rows.map((row) => (
+                    <tr>
+                      {row.map((cell, i) => <td class:list={{ 'data-out': i >= g.truth!.inputs.length }}>{cell}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )
+      }
+      {
+        g.ports.length > 0 && (
+          <>
+            <h3>Ports</h3>
+            <div class="viz-scroll viz-scroll--table">
+              <table class="data-table">
+                <thead>
+                  <tr><th scope="col">Name</th><th scope="col">Direction</th><th scope="col">Width</th></tr>
+                </thead>
+                <tbody>
+                  {g.ports.map((p) => <tr><td>{p.name}</td><td>{p.direction}</td><td>{p.width}</td></tr>)}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )
+      }
+      <noscript>
+        <style is:inline>
+          [data-circuit-panel][hidden] { display: block !important; }
+          [data-circuit] .viz-toggle { display: none; }
+        </style>
+      </noscript>
+    </section>
+  )
+}

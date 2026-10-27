@@ -1,4 +1,4 @@
-﻿// Encodes the highest-numbered active line of four inputs into a 2-bit code with a valid flag.
+// Encodes the highest-numbered active line of four inputs into a 2-bit code with a valid flag.
 module priority_encoder_4to2 (
     input  wire [3:0] d,
     output wire [1:0] y,

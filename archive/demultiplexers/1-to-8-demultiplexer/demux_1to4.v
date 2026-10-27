@@ -1,4 +1,4 @@
-﻿// Routes one data input to one of four outputs using a 1:2 demux on S1 feeding two 1:2 demuxes on S0.
+// Routes one data input to one of four outputs using a 1:2 demux on S1 feeding two 1:2 demuxes on S0.
 module demux_1to4 (
     input  wire       i,
     input  wire [1:0] s,

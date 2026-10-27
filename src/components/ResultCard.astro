@@ -1,0 +1,17 @@
+---
+import ResultThumb from './ResultThumb.astro';
+---
+
+<li class="result-card" data-motion="result-card" data-result-card>
+  <span class="index-num meta" aria-hidden="true" data-result-num></span>
+  <div class="result-body">
+    <a class="index-link" href="#" data-result-link></a>
+    <p class="meta result-meta">
+      <span data-result-category></span>
+      <span aria-hidden="true" data-result-sep> · </span>
+      <time data-result-date></time>
+    </p>
+    <p class="index-summary" data-result-excerpt></p>
+  </div>
+  <ResultThumb />
+</li>

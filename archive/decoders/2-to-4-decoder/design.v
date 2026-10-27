@@ -1,4 +1,4 @@
-﻿// Turns a 2-bit code into one active line out of four, gated by an enable input.
+// Turns a 2-bit code into one active line out of four, gated by an enable input.
 module decoder_2to4 (
     input  wire       en,
     input  wire [1:0] a,

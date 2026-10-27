@@ -1,0 +1,17 @@
+---
+import FilterChip from './FilterChip.astro';
+
+interface Props {
+  categories: { slug: string; name: string; count: number }[];
+}
+const { categories } = Astro.props;
+const total = categories.reduce((n, c) => n + c.count, 0);
+---
+
+<div class="filter-bar" data-motion="filter-bar" role="group" aria-label="Filter by category">
+  <div class="filter-chips">
+    <FilterChip label="All" count={total} pressed />
+    {categories.map((c) => <FilterChip label={c.name} slug={c.slug} value={c.name} count={c.count} />)}
+  </div>
+  <p class="meta filter-count" data-filter-count aria-hidden="true"></p>
+</div>
